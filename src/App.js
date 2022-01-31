@@ -1,10 +1,10 @@
 import React from "react";
 import "./App.css";
-import AuthRoutes from "./app/routes/AuthRoutes";
+import MainRoutes from "./app/routes/MainRoutes";
 
 function App() {
     return (
-        <AuthRoutes/>
+        <MainRoutes/>
     );
 } 
 

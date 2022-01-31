@@ -9,7 +9,6 @@ export const login = createAsyncThunk(
     }
 );
 
-
 export const register = createAsyncThunk(
     "auth/register", 
     async (data) => {
@@ -21,27 +20,49 @@ export const register = createAsyncThunk(
 export const postSlice = createSlice({
     name: "auth",
     initialState: {
-        token: null,
+        token: localStorage.getItem("token"),
         user_id: null,
         isPending: false,
+    },
+    reducers: {
+        logout: (state) => {
+            state.token = null;
+            state.user_id = null;
+            localStorage.removeItem("token");
+        },
+        setToken: (state) => {
+            state.token = (localStorage.getItem("token")) ? localStorage.getItem("token") : null;
+        }
     },
     extraReducers: (builder) => {
         builder.addCase(login.pending, (state) => {
             state.isPending = true;
         });
+        
         builder.addCase(login.fulfilled, (state, action) => {
             state.isPending = false;
-            console.log(action.payload);
+            if (action.payload.token && action.payload.user_id) {
+                state.user_id = action.payload.user_id;
+                state.token = action.payload.token;
+                localStorage.setItem("token", action.payload.token);
+            }
         });
         
         builder.addCase(register.pending, (state) => {
             state.isPending = true;
         });
+
         builder.addCase(register.fulfilled, (state, action) => {
             state.isPending = false;
-            console.log(action.payload);
+            if (action.payload.token && action.payload.user_id) {
+                state.user_id = action.payload.user_id;
+                state.token = action.payload.token;
+                localStorage.setItem("token", action.payload.token);
+            }
         });
     }
 });
+
+export const { logout, setToken } = postSlice.actions;
 
 export default postSlice.reducer;
